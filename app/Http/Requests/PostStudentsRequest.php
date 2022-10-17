@@ -27,11 +27,11 @@ class PostStudentsRequest extends FormRequest
     {
         return [
             //
-            'identity_number' => 'required|min:11|unique:students|numeric',
+            'identity_number' => 'required|min:11|numeric|unique:students,identity_number,'.$this->id,
             'student_name' => 'required',
             'student_surname' => 'required',
             'school_name' => 'required',
-            'student_number' => 'required|min:11|unique:students|numeric'
+            'student_number' => 'required|min:11|numeric|unique:students,student_number,'.$this->id
         ];
     }
     public function failedValidation(Validator $validator)

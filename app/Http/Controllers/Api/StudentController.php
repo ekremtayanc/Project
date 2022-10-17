@@ -7,6 +7,7 @@ use App\Http\Requests\PostStudentsRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\DataTables;
 
 class StudentController extends Controller
 {
@@ -19,7 +20,14 @@ class StudentController extends Controller
     {
         //
         $students = DB::select('CALL spStudentsList');
-        return response()->json($students);
+        return Datatables::of($students)->addIndexColumn()
+            ->addColumn('action', function($row){
+                $btn = '<a href="javascript:void(0)" data-id="'.$row->id.'" class="edit btn btn-primary">Düzenle</a> <a href="javascript:void(0)" data-id="'.$row->id.'" class="delete btn btn-danger">Sil</a>';
+                return $btn;
+            })
+            ->rawColumns(['action'])
+            ->toJson();
+
     }
 
     /**
@@ -32,7 +40,7 @@ class StudentController extends Controller
     {
         //
         $student = DB::select('CALL spStudentsCreate(?,?,?,?,?)',array($request->identity_number,$request->student_name,$request->student_surname,$request->school_name,$request->student_number));
-        return response()->json($student,201);
+        return ['success' => true, 'message'=>'Öğrenci Kaydı Eklendi.'];
     }
 
     /**
@@ -53,11 +61,11 @@ class StudentController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(PostStudentsRequest $request, $id)
+    public function update($id,PostStudentsRequest $request)
     {
         //
         $student = DB::select('CALL spStudentsUpdate(?,?,?,?,?,?)',array($id,$request->identity_number,$request->student_name,$request->student_surname,$request->school_name,$request->student_number));
-        return response()->json($student,201);
+        return ['success'=>true,'message'=>'Öğrenci Kaydı Güncellendi.'];
     }
 
     /**
@@ -66,10 +74,10 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         //
-        $student = DB::select('CALL spStudentsDelete('.$id.')');
-        return response()->json($student,204);
+        $student = DB::select('CALL spStudentsDelete('.$request->id.')');
+        return ['success'=>true,'message'=>'Öğrenci Kaydı Silindi.'];
     }
 }
