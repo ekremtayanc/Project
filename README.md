@@ -26,3 +26,4 @@
 - Terminal üzerinde ```php artisan tinker``` komutu ile tinker modülüne geçip, ```Student::factory()->count(1000)->create()```
 komutunu kullanarak factory üzerinden dummy datalar oluşturabilirsiniz.
 - Database bağlantılarını gerçekleştirdikten sonra ```php artisan serve``` komutu ile projeyi çalıştırabilirsiniz.
+- Tüm query loglar ```storage/logs/laravel.log``` dosyası üzerine oluşturulmaktadır.
